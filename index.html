@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Main Idea Mission">
+<meta name="theme-color" content="#1d4ed8">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon.png">
+<title>Main Idea Mission</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#0b1e4b;color:#1f2937;min-height:100vh}
+#app{max-width:640px;margin:0 auto;min-height:100vh;background:linear-gradient(180deg,#1d4ed8 0%,#3b82f6 55%,#22c55e 100%);padding:16px 14px 28px}
+.card{background:#fff;border-radius:24px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+h1{font-size:42px;line-height:1;margin:6px 0;color:#1d4ed8;text-align:center}
+h2{font-size:26px;margin:8px 0;color:#1d4ed8;text-align:center}
+.sub{text-align:center;font-size:18px;font-weight:700;color:#374151}
+.emoji-big{font-size:84px;text-align:center;line-height:1.1}
+.badge{display:inline-block;background:#dcfce7;color:#15803d;border-radius:999px;padding:6px 14px;font-weight:800;font-size:14px}
+.badge.blue{background:#dbeafe;color:#1d4ed8}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:18px;font-weight:800}
+.bigbtn{display:block;width:100%;padding:18px;font-size:24px;background:#f59e0b;color:#fff;box-shadow:0 6px 0 #b45309;margin:16px 0}
+.bigbtn:active{transform:translateY(3px);box-shadow:0 3px 0 #b45309}
+.bigbtn.green{background:#22c55e;box-shadow:0 6px 0 #15803d}
+.bigbtn.blue{background:#2563eb;box-shadow:0 6px 0 #1e40af}
+.smallbtn{padding:10px 14px;font-size:16px;background:#e5e7eb;color:#111827;margin:4px}
+.smallbtn.on{background:#f59e0b;color:#fff}
+.hud{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.pill{background:#eff6ff;border:2px solid #bfdbfe;border-radius:999px;padding:8px 12px;font-weight:800;font-size:15px}
+.bar{height:16px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin:8px 0}
+.bar>div{height:100%;background:linear-gradient(90deg,#f59e0b,#22c55e);width:0%}
+.story{font-size:19px;line-height:1.55;background:#fffbeb;border:2px solid #f59e0b;border-radius:16px;padding:16px;margin:12px 0}
+.choice{display:block;width:100%;text-align:left;padding:16px;font-size:19px;line-height:1.35;background:#eff6ff;border:3px solid #2563eb;color:#111827;border-radius:18px;margin:10px 0}
+.choice:active{transform:scale(.98)}
+.choice.correct{background:#dcfce7;border-color:#22c55e}
+.choice.wrong{background:#fee2e2;border-color:#ef4444}
+.choice:disabled{opacity:.95}
+.letter{display:inline-block;background:#2563eb;color:#fff;width:34px;height:34px;line-height:34px;text-align:center;border-radius:50%;margin-right:10px;font-size:20px}
+.feedback{text-align:center;font-size:24px;font-weight:900;min-height:36px;margin:8px 0}
+.hint{text-align:center;font-size:16px;color:#6b7280;min-height:22px}
+.map{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+.mapbtn{padding:14px 6px;font-size:16px;background:#eff6ff;border:3px solid #2563eb;border-radius:16px;color:#111827}
+.mapbtn.done{background:#dcfce7;border-color:#22c55e}
+.mapbtn.current{background:#fef3c7;border-color:#f59e0b}
+#dance{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:99;color:#fff;text-align:center;padding:20px}
+#dance .big{font-size:90px;animation:bounce 0.6s infinite alternate}
+@keyframes bounce{from{transform:translateY(0) scale(1)}to{transform:translateY(-18px) scale(1.15)}}
+.center{text-align:center}
+.small{font-size:14px;color:#6b7280;text-align:center}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="screen"></div>
+</div>
+<div id="dance"><div class="big">🕺🎉⭐</div><h2 style="color:#fff">DANCE BREAK!</h2><p style="font-size:20px">5 stars! You are a LEGEND!</p><button class="bigbtn green" onclick="closeDance()">Keep Playing! ▶</button></div>
+<script>
+const STORIES=[
+{section:"MINECRAFT",emoji:"💥",title:"Mission 1: The Creeper Surprise",story:"Steve was building a house in Minecraft. The sun was going down fast. A green Creeper was creeping closer and closer. Steve put bright torches all around his house. The Creeper could not get in, and Steve was safe all night.",choices:["Steve likes torches.","Steve builds a safe house before night to keep the Creeper out.","The Creeper is green."],correct:1},
+{section:"MINECRAFT",emoji:"💎",title:"Mission 2: Mining for Diamonds",story:"Alex grabbed her pickaxe and dug deep underground. It was dark and scary down there. She dug past stone and coal. Then she saw something shiny and blue. Alex found diamonds, and she used them to make strong tools.",choices:["Alex digs deep underground and finds diamonds to make strong tools.","Alex has a pickaxe.","Diamonds are shiny and blue."],correct:0},
+{section:"MINECRAFT",emoji:"🐉",title:"Mission 3: The Ender Dragon Battle",story:"Steve and Alex went to fight the Ender Dragon. The dragon was huge, and it flew high in the sky. Steve shot arrows, and Alex hit it with her sword. They did not give up. Together, they beat the dragon and won the game.",choices:["The dragon flies high in the sky.","Steve and Alex have swords.","Steve and Alex work together to beat the Ender Dragon."],correct:2},
+{section:"MINECRAFT",emoji:"🌾",title:"Mission 4: Building a Farm",story:"Steve was hungry, and there was no food in his house. He dug the dirt and planted seeds. He watered the seeds every day. Soon carrots and wheat grew big and tall. Now Steve always has food to eat.",choices:["Carrots are orange.","Steve builds a farm so he always has food.","Steve has a fence around his house."],correct:1},
+{section:"MINECRAFT",emoji:"🐺",title:"Mission 5: Taming a Wolf",story:"Alex saw a wolf in the forest. The wolf looked hungry and sad. Alex was kind and gave the wolf some bones. The wolf wagged its tail. Now the wolf follows Alex everywhere, and they are best friends.",choices:["Alex is kind to a wolf, feeds it bones, and it becomes her friend.","Wolves live in the forest.","Bones are white."],correct:0},
+{section:"MINECRAFT",emoji:"🔥",title:"Mission 6: The Nether Adventure",story:"Steve walked into the Nether, a hot and scary place. Lava bubbled all around him. He wore strong armor and moved very carefully. He did not run. Steve found gold, and he got back home safe.",choices:["Lava is hot.","Steve wears armor.","Steve is brave and careful in the hot, dangerous Nether."],correct:2},
+{section:"MINECRAFT",emoji:"🔧",title:"Mission 7: The Redstone Machine",story:"Steve wanted a door that opened by itself. He put redstone dust on the ground. He added a button and some wires. He pressed the button, and the door opened all by itself. Steve smiled. His machine worked!",choices:["Redstone is red.","Steve builds a redstone machine that opens a door by itself.","The door is made of wood."],correct:1},
+{section:"MINECRAFT",emoji:"🏠",title:"Mission 8: The Village Rescue",story:"Zombies were coming to a small village at night. The villagers were scared. Steve built a tall wall around the village. He put torches everywhere. The zombies could not get in, and the village was safe.",choices:["Steve helps save a village from zombies.","Villagers wear long robes.","Zombies come out at night."],correct:0},
+{section:"MINECRAFT",emoji:"⛄",title:"Mission 9: The Snowy Mountain Climb",story:"Alex wanted to climb the tallest snowy mountain. The wind was cold, and the snow was deep. Her legs were tired, but she kept going. Step by step, she climbed to the top. Alex cheered. She did it!",choices:["Snow is cold.","Alex has a map.","Alex climbs a snowy mountain and does not give up."],correct:2},
+{section:"MINECRAFT",emoji:"💰",title:"Mission 10: The Hidden Treasure Chest",story:"Steve found an old map in a chest. The map had a big red X on it. Steve followed the map across the sand. He dug and dug. Under the sand, he found a chest full of gold!",choices:["The chest is under the sand.","Steve follows a map and finds hidden treasure.","Gold is shiny."],correct:1},
+{section:"SUPERHERO",emoji:"⚡",title:"Mission 11: Captain Lightning Saves the City",story:"One night, all the lights in the city went out. People were scared in the dark. Captain Lightning zoomed through the sky in his blue cape. He used his power to turn the lights back on. The whole city cheered for him.",choices:["Captain Lightning is fast and saves the city from a blackout.","He wears a blue cape.","The lights went out at night."],correct:0},
+{section:"SUPERHERO",emoji:"✨",title:"Mission 12: The Invisible Girl",story:"The Invisible Girl could turn invisible. No one could see her at all. A little cat was stuck up in a tall tree. She turned invisible, climbed up quietly, and brought the cat down safe. No one saw her, but everyone was happy.",choices:["She can turn invisible.","The Invisible Girl uses her power to help quietly and save the day.","She wears purple shoes."],correct:1},
+{section:"SUPERHERO",emoji:"🐶",title:"Mission 13: Super Dog to the Rescue",story:"Super Dog had super hearing. He could hear sounds from far away. One day, he heard a little boy calling for help. The boy was lost in the park. Super Dog ran fast, found the boy, and led him home safe.",choices:["The dog is brown.","The boy lost his ball.","Super Dog uses his super hearing to find a lost boy."],correct:2},
+{section:"SUPERHERO",emoji:"🏃",title:"Mission 14: The Speedster Race",story:"The Speedster was the fastest hero in the city. He was in a big race, and he was winning. Then he saw his friend fall down. The Speedster stopped, helped his friend up, and they finished the race together.",choices:["The Speedster learns that helping a friend is more important than winning a race.","He runs very fast.","The race is on Saturday."],correct:0},
+{section:"SUPERHERO",emoji:"🤖",title:"Mission 15: The Robot Hero",story:"The Robot Hero was strong and made of metal. He could lift a whole car. But he did not have any friends. One day, he helped a kid fix his bike and played with him. Now the Robot Hero knows how to be a good friend.",choices:["He is made of metal.","The Robot Hero learns to be a good friend, not just a strong machine.","He can lift a car."],correct:1},
+{section:"SUPERHERO",emoji:"✈️",title:"Mission 16: Flying School",story:"At Flying School, young heroes learn to fly. They wear goggles and capes. Their teacher shows them how to fly up high and how to land soft. Most of all, they learn to use flying to help people who need help.",choices:["The school is in the clouds.","They wear goggles.","At Flying School, young heroes learn to fly and help others."],correct:2},
+{section:"SUPERHERO",emoji:"🎭",title:"Mission 17: The Masked Mystery",story:"Every night, a mystery hero helped people in the city. He stopped a bike thief. He helped an old lady cross the street. He wore a black mask, and he always left a little note. No one knew who he was.",choices:["A mystery hero helps people at night, and no one knows who he is.","He wears a black mask.","He leaves a little note."],correct:0},
+{section:"SUPERHERO",emoji:"🌩️",title:"Mission 18: The Big Storm",story:"A big storm hit the city. Rain poured down, and the wind blew hard. The heroes flew out together. One hero held the trees. One hero helped people get home safe. Together, they kept everyone safe in the storm.",choices:["Rain is falling.","The heroes work together to keep everyone safe in a big storm.","The wind blows hard."],correct:1},
+{section:"SUPERHERO",emoji:"🤝",title:"Mission 19: The Team-Up",story:"One hero could fly, but he was not very strong. One hero was very strong, but he could not fly. A big rock was blocking the road. The flying hero lifted the strong hero up, and together they moved the rock. They were stronger together.",choices:["One hero can fly.","One hero is very strong.","Two heroes team up because they are stronger together."],correct:2},
+{section:"SUPERHERO",emoji:"⭐",title:"Mission 20: The New Hero",story:"Max was just a kid, and he wanted to be a hero. He did not have superpowers. But he was brave, and he was kind. He helped his friends, he shared, and he never gave up. Max learned that being brave and kind makes him a real hero.",choices:["A kid learns that being brave and kind makes him a real hero.","He gets a shiny cape.","His name is Max."],correct:0}
+];
+let order=[...STORIES.keys()], idx=0, points=0, stars=0, streak=0, firstTry=0, tried=0, answered=new Set(), soundOn=true, locked=false;
+let ctx=null;
+function beep(f,d=0.15,type='sine',v=0.2){ if(!soundOn) return; try{ ctx=ctx||new (window.AudioContext||window.webkitAudioContext)(); const o=ctx.createOscillator(),g=ctx.createGain(); o.type=type; o.frequency.value=f; g.gain.value=v; o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+d);}catch(e){} }
+function ding(){ beep(880,.12); setTimeout(()=>beep(1320,.2),110); }
+function boing(){ beep(200,.2,'sawtooth',.12); }
+function level(n){ return n<=5?'ROOKIE':n<=10?'EXPLORER':n<=15?'HERO':'LEGEND ⭐'; }
+function hud(){ return `<div class="hud"><span class="pill">⭐ ${stars} stars</span><span class="pill">🏆 ${points} points</span><span class="pill">🔥 ${streak} in a row</span><span class="pill">🎯 ${tried?Math.round(firstTry/tried*100):100}% first try</span></div><div class="bar"><div style="width:${stars/20*100}%"></div></div><p class="small">Goal: 90% first try • Level: ${level(stars)}</p>`; }
+function showStart(){
+ document.getElementById('screen').innerHTML=`<div class="card"><div class="emoji-big">🦸‍♂️⛏️🐉</div><h1>MAIN IDEA<br>MISSION</h1><p class="sub">20 Missions for a Superhero Explorer</p><p class="center"><span class="badge">⛏️ MINECRAFT</span> <span class="badge blue">🦸 SUPERHEROES</span></p><p style="font-size:18px;line-height:1.5;text-align:center">Read the story.<br>Find the MAIN IDEA.<br>Earn a star. Become a LEGEND!</p><button class="bigbtn green" onclick="startGame()">▶ PLAY!</button><button class="bigbtn blue" onclick="showMap()">🗺️ MISSION MAP</button><div class="center"><button class="smallbtn ${soundOn?'on':''}" onclick="soundOn=!soundOn;showStart()">🔊 Sound: ${soundOn?'On':'Off'}</button><button class="smallbtn" onclick="shuffleOrder()">🔀 Shuffle</button></div><p class="small">Levels: 1–5 Rookie • 6–10 Explorer • 11–15 Hero • 16–20 Legend</p></div>`;
+}
+function shuffleOrder(){ order=order.sort(()=>Math.random()-.5); beep(600,.1); showStart(); }
+function startGame(){ idx=0; points=0; stars=0; streak=0; firstTry=0; tried=0; answered=new Set(); showMission(); }
+function showMission(){
+ locked=false;
+ const s=STORIES[order[idx]];
+ document.getElementById('screen').innerHTML=`<div class="card">${hud()}<p class="center"><span class="badge ${s.section==='SUPERHERO'?'blue':''}">${s.section} • MISSION ${idx+1} OF 20</span></p><div class="emoji-big">${s.emoji}</div><h2>${s.title}</h2><div class="story">${s.story}</div><h2 style="font-size:22px">What is the MAIN IDEA?</h2><div id="choices">${s.choices.map((c,i)=>`<button class="choice" onclick="pick(${i},this)"><span class="letter">${'ABC'[i]}</span>${c}</button>`).join('')}</div><div class="feedback" id="fb"></div><div class="hint" id="hint">Pick one! Say it like this: “The main idea is…”</div><div class="center"><button class="smallbtn" onclick="showMap()">🗺️ Map</button><button class="smallbtn" onclick="showStart()">🏠 Home</button><button class="smallbtn" onclick="soundOn=!soundOn;showMission()">🔊 ${soundOn?'On':'Off'}</button></div></div>`;
+}
+function pick(i,btn){
+ if(locked) return;
+ const s=STORIES[order[idx]];
+ const firstAttempt=!btn.parentElement.dataset.tried;
+ if(firstAttempt){ btn.parentElement.dataset.tried='1'; tried++; }
+ if(i===s.correct){
+   locked=true; ding();
+   if(firstAttempt) firstTry++;
+   points+=10; stars++; streak++; answered.add(order[idx]);
+   btn.classList.add('correct');
+   document.querySelectorAll('.choice').forEach(b=>b.disabled=true);
+   document.getElementById('fb').textContent='🎉 You got it! +10 points! ⭐';
+   document.getElementById('hint').textContent='Say it in a full sentence: “The main idea is…”';
+   if(stars%5===0){ setTimeout(()=>{ document.getElementById('dance').style.display='flex'; beep(660,.15); setTimeout(()=>beep(880,.15),150); setTimeout(()=>beep(1320,.25),300); },600); }
+   setTimeout(next, stars%5===0?2500:1600);
+ } else {
+   boing(); streak=0; btn.classList.add('wrong'); btn.disabled=true;
+   document.getElementById('fb').textContent='Try again! 💪';
+   document.getElementById('hint').textContent='Hint: what is the story MOSTLY about — not just one small detail?';
+ }
+}
+function next(){ idx++; if(idx>=20) showWin(); else showMission(); }
+function closeDance(){ document.getElementById('dance').style.display='none'; }
+function showMap(){
+ document.getElementById('screen').innerHTML=`<div class="card"><h2>🗺️ MISSION MAP</h2>${hud()}<div class="map">${STORIES.map((s,i)=>`<button class="mapbtn ${answered.has(i)?'done':''} ${i===order[idx]?'current':''}" onclick="idx=${i};showMission()">${s.emoji}<br>Mission ${i+1}<br>${answered.has(i)?'⭐ DONE':'—'}</button>`).join('')}</div><button class="bigbtn green" onclick="idx<20?showMission():showWin()">▶ ${idx<20?'Play Mission '+(idx+1):'See My Score!'}</button><button class="bigbtn" onclick="showStart()">🏠 Home</button></div>`;
+}
+function showWin(){
+ const acc=tried?Math.round(firstTry/tried*100):100;
+ document.getElementById('screen').innerHTML=`<div class="card"><div class="emoji-big">🏆⭐🎉</div><h1>YOU DID IT,<br>HERO!</h1><p class="sub">You finished all 20 Main Idea Missions!</p><p style="text-align:center;font-size:22px"><b>⭐ ${stars} / 20 stars<br>🏆 ${points} points<br>🎯 ${acc}% first try</b></p><p style="text-align:center;font-size:22px">Your level: <b>${level(stars)}</b></p><p class="center">${acc>=90?'🎉 You hit the 90% goal! AMAZING!':'Great job! Play again to beat your score!'}</p><button class="bigbtn green" onclick="startGame()">↩️ Play Again</button><button class="bigbtn blue" onclick="showMap()">🗺️ Mission Map</button></div>`;
+ ding(); setTimeout(ding,400);
+}
+showStart();
+</script>
+</body>
+</html>
